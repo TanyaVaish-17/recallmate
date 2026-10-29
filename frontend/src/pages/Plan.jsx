@@ -24,10 +24,7 @@ export default function Plan() {
         setMsg('');
         try {
             const r = await api.generatePlan(horizon);
-            setMsg(r.model.trained
-                ? `Plan generated with ${r.created} new sessions using model ${r.model.model_version}.`
-                : `Plan generated with ${r.created} new sessions. Model not trained, so predictions were not used.`);
-            await plan.reload();
+            setMsg(`Plan generated with ${r.length} sessions.`);
         }
         catch (e) {
             setErr(e instanceof Error ? e.message : 'Failed');

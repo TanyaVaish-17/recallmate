@@ -34,7 +34,7 @@ export default function Analytics() {
     const topicBars = preds.topics.filter(t => t.probability !== null)
         .map(t => ({ name: t.topic_name, percent: Math.round((t.probability ?? 0) * 100), color: t.subject_color }))
         .sort((a, b) => a.percent - b.percent);
-    const counts = ['completed', 'pending', 'missed', 'skipped'].map(st => ({ name: st, count: plan.filter(s => s.status === st).length }));
+    const counts = ['completed', 'planned', 'missed', 'skipped'].map(st => ({ name: st, count: plan.filter(s => s.status === st).length }));
     return (<>
       <PageTitle title="Analytics" sub="Everything here is computed from your own recorded activity."/>
       <div className="grid gap-4 md:grid-cols-2">

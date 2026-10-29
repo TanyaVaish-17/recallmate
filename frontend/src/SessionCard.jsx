@@ -30,14 +30,14 @@ export default function SessionCard({ s, onChanged, allowDelete = false }) {
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="font-semibold text-slate-900">{s.topic_name}</p>
-          <p className="text-xs text-slate-500">{s.subject_name} · {s.duration_minutes} min · priority {Number(s.priority ?? 0).toFixed(2)}</p>
+          <p className="text-xs text-slate-500">{s.subject_name} · {s.duration_minutes} min · priority {Number(s.priority_score ?? 0).toFixed(2)}</p>
         </div>
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${BADGE[s.status] ?? BADGE.pending}`}>{s.status}</span>
       </div>
       <p className="mt-2 text-sm text-slate-600">{s.reason}</p>
       <p className="mt-1 text-xs text-slate-500">
-        {typeof s.predicted_probability === 'number'
-            ? `Model estimate of answering correctly: ${pct(s.predicted_probability)} (an estimate, not a measure of memory)`
+        {typeof s.predicted_p === 'number'
+            ? `Model estimate of answering correctly: ${pct(s.predicted_p)} (an estimate, not a measure of memory)`
             : 'No model estimate yet for this topic'}
       </p>
       {err && <div className="mt-2"><ErrorBox message={err}/></div>}
