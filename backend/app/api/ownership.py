@@ -6,6 +6,7 @@ from app.models.topic import Topic
 from app.models.user import User
 from sqlalchemy.orm import Session, selectinload
 from app.models.question import Question
+from app.models.quiz import QuizAttempt, QuizResponse
 
 
 def get_owned_subject(db: Session, subject_id: int, user: User) -> Subject:
@@ -45,3 +46,17 @@ def get_owned_question(db: Session, question_id: int, user: User) -> Question:
     if question is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Question not found")
     return question
+
+def get_owned_attempt(db: Session, attempt_id: int, user: User) -> QuizAttempt:
+    attempt = db.scalar(
+        select(QuizAttempt)
+        .options(
+            selectinload(QuizAttempt.responses)
+            .selectinload(QuizResponse.question)
+            .selectinload(Question.options)
+        )
+        .where(QuizAttempt.id == attempt_id, QuizAttempt.user_id == user.id)
+    )
+    if attempt is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Quiz not found")
+    return attempt
