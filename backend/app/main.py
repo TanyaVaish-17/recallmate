@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.db.session import get_db
 
 app = FastAPI(
     title="RecallMate API",
@@ -21,3 +24,9 @@ app.add_middleware(
 @app.get("/api/health", tags=["system"])
 def health():
     return {"status": "ok", "service": "recallmate-api"}
+
+
+@app.get("/api/health/db", tags=["system"])
+def health_db(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
+    return {"status": "ok", "database": "connected"}
