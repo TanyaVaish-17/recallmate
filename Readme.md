@@ -73,10 +73,6 @@ and a transparent scheduler turns those estimates into a daily revision plan.
     <td align="center"><b>📈 Analytics</b><br><img src="docs/screenshots/analytics.png" width="420"></td>
     <td align="center"><b>🧠 Model</b><br><img src="docs/screenshots/model.png" width="420"></td>
   </tr>
-  <tr>
-    <td align="center"><b>🔐 Login</b><br><img src="docs/screenshots/login.png" width="420"></td>
-    <td align="center"><b>🔌 API Docs (Swagger)</b><br><img src="docs/screenshots/api-docs.png" width="420"></td>
-  </tr>
 </table>
 
 ---
