@@ -4,3 +4,7 @@ sqlalchemy>=2.0.30
 alembic>=1.13
 psycopg[binary]>=3.2
 pydantic-settings>=2.4
+
+pwdlib[argon2]>=0.2
+pyjwt>=2.9
+email-validator>=2.2
