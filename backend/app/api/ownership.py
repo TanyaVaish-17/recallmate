@@ -1,11 +1,11 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from app.models.exam import Exam
 from app.models.subject import Subject
 from app.models.topic import Topic
 from app.models.user import User
+from sqlalchemy.orm import Session, selectinload
+from app.models.question import Question
 
 
 def get_owned_subject(db: Session, subject_id: int, user: User) -> Subject:
@@ -33,3 +33,15 @@ def get_owned_exam(db: Session, exam_id: int, user: User) -> Exam:
     if exam is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Exam not found")
     return exam
+
+def get_owned_question(db: Session, question_id: int, user: User) -> Question:
+    question = db.scalar(
+        select(Question)
+        .options(selectinload(Question.options))
+        .join(Topic, Question.topic_id == Topic.id)
+        .join(Subject, Topic.subject_id == Subject.id)
+        .where(Question.id == question_id, Subject.user_id == user.id)
+    )
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Question not found")
+    return question
