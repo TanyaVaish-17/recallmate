@@ -26,3 +26,5 @@ ml/artifacts/*.pth
 Thumbs.db
 .vscode/
 .idea/
+
+.env
