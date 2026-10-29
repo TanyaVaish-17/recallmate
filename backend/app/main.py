@@ -2,9 +2,9 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-
 from app.core.config import settings
 from app.db.session import get_db
+from app.api.router import api_router
 
 app = FastAPI(
     title="RecallMate API",
@@ -20,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(api_router)
 
 @app.get("/api/health", tags=["system"])
 def health():
