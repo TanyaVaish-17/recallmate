@@ -46,3 +46,18 @@ class UserRead(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class UserUpdate(BaseModel):
+    display_name: str | None = Field(default=None, min_length=1, max_length=100)
+    daily_study_minutes: int | None = Field(default=None, ge=15, le=720)
+    session_minutes: int | None = Field(default=None, ge=10, le=120)
+
+    @field_validator("display_name")
+    @classmethod
+    def strip_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        value = value.strip()
+        if not value:
+            raise ValueError("Display name cannot be empty")
+        return value

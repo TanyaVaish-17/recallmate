@@ -6,7 +6,7 @@ from app.api.deps import get_current_user
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import Token, UserCreate, UserLogin, UserRead
+from app.schemas.user import Token, UserCreate, UserLogin, UserRead, UserUpdate
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -42,4 +42,29 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserRead)
 def me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.patch("/me", response_model=UserRead)
+def update_me(
+    payload: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    daily = payload.daily_study_minutes or current_user.daily_study_minutes
+    session = payload.session_minutes or current_user.session_minutes
+    if session > daily:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Session length cannot exceed daily study time",
+        )
+
+    if payload.display_name is not None:
+        current_user.display_name = payload.display_name
+    if payload.daily_study_minutes is not None:
+        current_user.daily_study_minutes = payload.daily_study_minutes
+    if payload.session_minutes is not None:
+        current_user.session_minutes = payload.session_minutes
+
+    db.commit()
+    db.refresh(current_user)
     return current_user
