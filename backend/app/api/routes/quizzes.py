@@ -1,4 +1,5 @@
 import random
+import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -24,6 +25,8 @@ from app.schemas.quiz import (
     QuizSummary,
     ResponseResult,
 )
+
+from app.services.planner import on_quiz_submitted
 
 router = APIRouter(prefix="/quizzes", tags=["quizzes"])
 
@@ -194,7 +197,13 @@ def submit_quiz(
     attempt.score = score
     attempt.completed_at = now
     db.commit()
-    return _build_result(attempt)
+    result = _build_result(attempt)  # build the response BEFORE the hook can touch the session
+    try:  # never let prediction/scheduling problems break quiz submission
+        on_quiz_submitted(db, current_user, attempt)
+    except Exception:
+        logging.getLogger("recallmate").exception("Post-quiz prediction/plan update failed")
+        db.rollback()
+    return result
 
 
 # History
