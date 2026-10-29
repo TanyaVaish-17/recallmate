@@ -1,0 +1,7 @@
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.5
+pytest>=8.0
+# PyTorch is needed from Step 2 onward (model + training).
+# Install the CPU build from https://pytorch.org/get-started/locally/ if you have no GPU:
+torch>=2.3
